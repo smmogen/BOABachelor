@@ -123,7 +123,7 @@ def scrape_finn():
                 bolig_info['Nybygg'] = 0
             
 
-            #for key, value in bolig_info.items():
+            #for key, value in bolig_info.items(): hbwekfuhwiuf
                 #print(f'{key} = {value}')
 
             header = append_to_csv(bolig_info, header) #Oppdaterer header til True
