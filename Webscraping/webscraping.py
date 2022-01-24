@@ -126,14 +126,14 @@ def scrape_finn():
             #for key, value in bolig_info.items(): hbwekfuhwiuf
                 #print(f'{key} = {value}')
 
-            header = append_to_csv(bolig_info, header) #Oppdaterer header til True
+            ##header = append_to_csv(bolig_info, header) #Oppdaterer header til True
             
             if antall%10==0:
                 print('Appended row nr: ', antall)
             if antall%50==0:
                 print('########## Appended site nr: ', i,  '##########')
             antall += 1
-
+    print(i)
             
 scrape_finn()
 
