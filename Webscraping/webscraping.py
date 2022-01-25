@@ -91,7 +91,7 @@ def number_of_ads(fylker): #Tar inn fylker som en dictionary
                 liste.append(fylke_antall) #Legger til i fylker-dictionary
 
 def number_of_pages(antall_annonser):
-        antall_sider = (antall_annonser%50) #Finner antall sider det er annonser for
+        antall_sider = (antall_annonser//50) #Finner antall sider det er annonser for
         if antall_sider*50<antall_annonser:
             antall_sider +=1 #Legger til siste side
         if antall_sider>50:
@@ -223,6 +223,19 @@ def add_info(bolig_info, soup_bolig, info_list_class, fasteliteter, header):
     #Legger til fasteliteter i bolig_info    
     bolig_info.update(fasteliteter_dict)
 
+def tidsinfo(antall_annonser,antall_annonser_fylke,fylke, i):
+    print()
+    tid_nå = datetime.datetime.now().strftime("%H:%M:%S")
+    soving = r.randint(10,30)
+    tid_igjen = round((antall_annonser-antall_annonser_fylke)/60, 2) #Beregner tid igjen
+    print(f'Klokkeslett: {tid_nå}')
+    print()
+    print(f'########## Appended site nr: {i}/{antall_annonser//50} ##########')
+    print(f"Pauser i {soving} sekund for å hindre å bli kastet ut av serveren")
+    print(f"Estimert tid igjen for {fylke} (1 sekund pr annonse): {tid_igjen} minutter")
+    print(f"Annonser hentet: {antall_annonser_fylke}/{antall_annonser}")
+    time.sleep(soving) #10-30 sek sleep
+
 def scrape_finn():
 
     filnavn = input('Filnavn: ')
@@ -294,14 +307,7 @@ def scrape_finn():
                     print(f'Appended row nr: {antall}. Fylke: {fylke}')
                     time.sleep(3)
                 if antall%50==0: #Statistikk
-                    print()
-                    soving = r.randint(10,30)
-                    tid_igjen = round((antall_annonser-antall_annonser_fylke)/60, 2) #Beregner tid igjen
-                    print(f'########## Appended site nr: {i}/{antall_sider} ##########')
-                    print(f"Pauser i {soving} sekund for å hindre å bli kastet ut av serveren")
-                    print(f"Estimert tid igjen for {fylke} (1 sekund pr annonse): {tid_igjen} minutter")
-                    print(f"Annonser hentet: {antall_annonser_fylke}/{antall_annonser}")
-                    time.sleep(soving) #10-30 sek sleep
+                    tidsinfo(antall_annonser,antall_annonser_fylke,fylke, i) #Print diverse nyttig info
 
                 #Sjekker antall annonser
                 if antall_annonser_fylke==antall_annonser:
