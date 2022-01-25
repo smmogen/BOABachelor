@@ -124,24 +124,27 @@ def find_adress(adresse):
 
 def format_date(dato_string):
     dato_string = dato_string.split('.')
-    dag = dato_string[0].strip()
-    måned = dato_string[1].strip()
-    år = dato_string[2][0:5].strip()
+    if len(dato_string)>=3:
+        dag = dato_string[0].strip()
+        måned = dato_string[1].strip()
+        år = dato_string[2][0:5].strip()
 
-    #Gjør om måned fra string til int
-    måned_dict = {'jan':'01','feb':'02','mar':'03','apr':'04','mai':'05','jun':'06','jul':'07','aug':'08','sep':'09','okt':'10','nov':'11','des':'12'}
-    for måned_str, måned_int in måned_dict.items():
-        if måned==måned_str:
-            måned=måned_int
-    
-    #Sjekker at dag er 2 siffer
-    if len(dag)==1:
-        dag = '0'+dag
-    
-    #Lager iso-format på datoen
-    dato_isoformat = datetime.date.fromisoformat(år+'-'+måned+'-'+dag)
+        #Gjør om måned fra string til int
+        måned_dict = {'jan':'01','feb':'02','mar':'03','apr':'04','mai':'05','jun':'06','jul':'07','aug':'08','sep':'09','okt':'10','nov':'11','des':'12'}
+        for måned_str, måned_int in måned_dict.items():
+            if måned==måned_str:
+                måned=måned_int
+        
+        #Sjekker at dag er 2 siffer
+        if len(dag)==1:
+            dag = '0'+dag
+        
+        #Lager iso-format på datoen
+        dato_isoformat = datetime.date.fromisoformat(år+'-'+måned+'-'+dag)
 
-    return (date_today-dato_isoformat) #Returnerer antall dager siden annonsen
+        return (date_today-dato_isoformat) #Returnerer antall dager siden annonsen
+    else:
+        return 0
 
 def add_info(bolig_info, soup_bolig, info_list_class, fasteliteter, header):
     #Legger til info fra standard-liste
