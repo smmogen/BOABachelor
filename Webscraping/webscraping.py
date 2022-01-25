@@ -192,11 +192,12 @@ def add_info(bolig_info, soup_bolig, info_list_class, fasteliteter, header):
 
     #Legger til adresse, postnummer, kommune, latitude, longitude
     adresse = soup_bolig.find('p', class_ = 'u-caption')
-    #if adresse==None:
-     #   adresse = soup_bolig.find_All('p', class_ = 'inline-block')
-    if adresse!=None:
-        adresse_dict = find_adress(adresse.text) #Får en dict med diverse info fra adressen
-        bolig_info.update(adresse_dict) #Legger til adresse-info i bolig_info
+
+    bolig_info['Adresse'] = adresse
+    #Må hentes senere, tar for lang tid nå
+    #if adresse!=None:
+    #    adresse_dict = find_adress(adresse.text) #Får en dict med diverse info fra adressen
+    #    bolig_info.update(adresse_dict) #Legger til adresse-info i bolig_info
 
     #Sjekker hvor mange dager annonsen har ligget på finn
     antall_dager_finn = soup_bolig.findAll('td', class_ = 'u-no-break u-pl8')
@@ -226,13 +227,13 @@ def add_info(bolig_info, soup_bolig, info_list_class, fasteliteter, header):
 def tidsinfo(antall_annonser,antall_annonser_fylke,fylke, i):
     print()
     tid_nå = datetime.datetime.now().strftime("%H:%M:%S")
-    soving = r.randint(10,30)
+    soving = r.randint(0,10)
     tid_igjen = round((antall_annonser-antall_annonser_fylke)/60, 2) #Beregner tid igjen
     print(f'Klokkeslett: {tid_nå}')
     print()
     print(f'########## Appended site nr: {i}/{antall_annonser//50} ##########')
     print(f"Pauser i {soving} sekund for å hindre å bli kastet ut av serveren")
-    print(f"Estimert tid igjen for {fylke} (1 sekund pr annonse): {tid_igjen} minutter")
+    #print(f"Estimert tid igjen for {fylke} (1 sekund pr annonse): {tid_igjen} minutter")
     print(f"Annonser hentet: {antall_annonser_fylke}/{antall_annonser}")
     time.sleep(soving) #10-30 sek sleep
 
@@ -242,7 +243,9 @@ def scrape_finn():
     filnavn +=".csv" #Legger til csv-ending på filen
     antall = 0 #Antall rader
 
-    header = ['Pris', 'Boligtype', 'Eieform bolig', 'Soverom', 'Primærrom', 'Bruksareal', 'Etasje', 'Byggeår', 'Energimerking', 'URL', 'ID', 'Dager siden annonse', 'Nybygg', 'Land', 'Fylke', 'Postnummer', 'Kommune', 'Latitude', 'Longitude', 'Omkostninger', 'Totalpris','Kommunale avg.','Formuesverdi', 'Tomteareal','Aircondition', 'Alarm','Balkong/Terrasse','Takterasse','Barnevennlig','Bredbåndstilknytning','Fellesvaskeri','Garasje/P-plass','Heis','Ingen gjenboerer','Kabel-TV','Lademulighet','Livsløpsstandard','Moderne','Offentlig vann/kloakk','Parkett','Peis/Ildsted','Rolig','Sentralt','Utsikt','Vaktmester-/vektertjeneste','Bademulighet','Fiskemulighet','Turterreng'] #Liste med header-navn + fasteliteter
+    header = ['Pris', 'Boligtype', 'Eieform bolig', 'Soverom', 'Primærrom', 'Bruksareal', 'Etasje', 'Byggeår', 'Energimerking', 'URL', 'ID', 'Dager siden annonse', 'Nybygg', 'Fylke',  'Omkostninger', 'Totalpris','Kommunale avg.','Formuesverdi', 'Tomteareal','Aircondition', 'Alarm','Balkong/Terrasse','Takterasse','Barnevennlig','Bredbåndstilknytning','Fellesvaskeri','Garasje/P-plass','Heis','Ingen gjenboerer','Kabel-TV','Lademulighet','Livsløpsstandard','Moderne','Offentlig vann/kloakk','Parkett','Peis/Ildsted','Rolig','Sentralt','Utsikt','Vaktmester-/vektertjeneste','Bademulighet','Fiskemulighet','Turterreng'] #Liste med header-navn + fasteliteter
+
+    #'Land', 'Postnummer', 'Kommune', 'Latitude', 'Longitude'
 
     fasteliteter = ['Aircondition', 'Alarm','Balkong/Terrasse','Takterasse','Barnevennlig','Bredbåndstilknytning','Fellesvaskeri','Garasje/P-plass','Heis','Ingen gjenboerer','Kabel-TV','Lademulighet','Livsløpsstandard','Moderne','Offentlig vann/kloakk','Parkett','Peis/Ildsted','Rolig','Sentralt','Utsikt','Vaktmester-/vektertjeneste','Bademulighet','Fiskemulighet','Turterreng'] #Liste med fasteliteter som finnes på finn.no
 
@@ -305,7 +308,7 @@ def scrape_finn():
                 
                 if antall%10==0:
                     print(f'Appended row nr: {antall}. Fylke: {fylke}')
-                    time.sleep(3)
+                    #time.sleep(3)
                 if antall%50==0: #Statistikk
                     tidsinfo(antall_annonser,antall_annonser_fylke,fylke, i) #Print diverse nyttig info
 
