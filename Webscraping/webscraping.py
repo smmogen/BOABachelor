@@ -284,7 +284,7 @@ def scrape_finn():
                 header = append_to_csv(bolig_info, header, filnavn) #Oppdaterer header til True
                 
                 if antall%10==0:
-                    print('Appended row nr: ', antall + '. Fylke: ',{fylke})
+                    print(f'Appended row nr: {antall}. Fylke: {fylke}')
                 if antall%50==0:
                     print('########## Appended site nr: ', i,  '##########')
                     print('URL: ', url)
