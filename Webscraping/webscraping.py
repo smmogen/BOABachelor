@@ -1,8 +1,10 @@
 from bs4 import BeautifulSoup
 import requests
 import csv
+import time
 import datetime
 import pandas as pd
+import random as r
 from geopy.extra.rate_limiter import RateLimiter
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
@@ -93,7 +95,7 @@ def number_of_pages(antall_annonser):
         if antall_sider*50<antall_annonser:
             antall_sider +=1 #Legger til siste side
         if antall_sider>50:
-            print('yo')
+            print('Max antall sider: 50')
             antall_sider=50 #Begrenser antall sider til 50
         return antall_sider
 
@@ -109,6 +111,7 @@ def make_dict(liste, fasit):
 def find_adress(adresse):
     nom = Nominatim(user_agent='Andyyy')
     geocode = RateLimiter(nom.geocode, min_delay_seconds=2.5, error_wait_seconds=5.0,max_retries=2)
+    time.sleep(1) #Hindrer forhåpentligvis å bli kastet ut av serveren
 
     adresse_format = geocode(adresse)
     adresse_dict = {} #Oppretter to dict til adresse
@@ -239,6 +242,7 @@ def scrape_finn():
         antall_annonser = fylke_nummer[1]
         antall_sider = number_of_pages(antall_annonser) #Henter antall sider for hvert fylke
         print(f'Antall sider for {fylke} er {antall_sider}')
+        antall_annonser_fylke = 0 #Resettes for hvert fylke
 
         for i in range(1,antall_sider): #Går gjennom opptil 50 sider for hvert fylke
             html_mainpage = requests.get(get_page_url(i, finn_kode)).text
@@ -288,13 +292,21 @@ def scrape_finn():
                 
                 if antall%10==0:
                     print(f'Appended row nr: {antall}. Fylke: {fylke}')
-                if antall%50==0:
-                    print('########## Appended site nr: ', i,  '##########')
-                    print('URL: ', url)
+                    time.sleep(3)
+                if antall%50==0: #Statistikk
+                    print()
+                    soving = r.randint(10,30)
+                    tid_igjen = round((antall_annonser-antall_annonser_fylke)/60, 2) #Beregner tid igjen
+                    print(f'########## Appended site nr: {i}/{antall_sider} ##########')
+                    print(f"Pauser i {soving} sekund for å hindre å bli kastet ut av serveren")
+                    print(f"Estimert tid igjen for {fylke} (1 sekund pr annonse): {tid_igjen} minutter")
+                    print(f"Annonser hentet: {antall_annonser_fylke}/{antall_annonser}")
+                    time.sleep(soving) #10-30 sek sleep
 
                 #Sjekker antall annonser
-                if antall==antall_annonser:
-                    print(f"Antall annonser for {fylke}: {antall}")
+                if antall_annonser_fylke==antall_annonser:
+                    print(f"Antall annonser for {fylke}: {antall_annonser_fylke}")
                 antall += 1
+                antall_annonser_fylke +=1
         
 scrape_finn() 
