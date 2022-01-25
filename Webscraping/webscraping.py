@@ -235,7 +235,7 @@ def scrape_finn():
         finn_kode = fylke_nummer[0]
         antall_annonser = fylke_nummer[1]
         antall_sider = number_of_pages(antall_annonser) #Henter antall sider for hvert fylke
-        print(antall_sider)
+        print(f'Antall sider for {fylke} er {antall_sider}')
 
         for i in range(1,antall_sider): #Går gjennom opptil 50 sider for hvert fylke
             html_mainpage = requests.get(get_page_url(i, finn_kode)).text
@@ -250,8 +250,6 @@ def scrape_finn():
                 url = str(html_bolig['href'])
                 if j==0:
                     url = 'https://www.finn.no' + url
-
-                print('URL: ', url)
 
                 id = html_bolig['id']
                 kvm_pris = boligliste[j].find('div', class_ = 'ads__unit__content__keys').text
@@ -286,9 +284,10 @@ def scrape_finn():
                 header = append_to_csv(bolig_info, header, filnavn) #Oppdaterer header til True
                 
                 if antall%10==0:
-                    print('Appended row nr: ', antall)
+                    print('Appended row nr: ', antall + '. Fylke: ',{fylke})
                 if antall%50==0:
                     print('########## Appended site nr: ', i,  '##########')
+                    print('URL: ', url)
 
                 #Sjekker antall annonser
                 if antall==antall_annonser:
