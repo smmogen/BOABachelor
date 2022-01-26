@@ -91,13 +91,15 @@ def number_of_ads(fylker): #Tar inn fylker som en dictionary
                 liste.append(fylke_antall) #Legger til i fylker-dictionary
 
 def number_of_pages(antall_annonser):
-        antall_sider = (antall_annonser//50) #Finner antall sider det er annonser for
-        if antall_sider*50<antall_annonser:
-            antall_sider +=1 #Legger til siste side
-        if antall_sider>50:
-            print('Max antall sider: 50')
-            antall_sider=50 #Begrenser antall sider til 50
-        return antall_sider
+    print(antall_annonser)
+    antall_sider = (antall_annonser//50) #Finner antall sider det er annonser for
+    if antall_sider*50<antall_annonser:
+        antall_sider +=1 #Legger til siste side
+    if antall_sider>50:
+        print('Max antall sider: 50')
+        antall_sider=50 #Begrenser antall sider til 50
+    print(antall_sider)
+    return antall_sider
 
 def make_dict(liste, fasit):
     dictionary={}
@@ -249,7 +251,7 @@ def scrape_finn():
 
     fasteliteter = ['Aircondition', 'Alarm','Balkong/Terrasse','Takterasse','Barnevennlig','Bredbåndstilknytning','Fellesvaskeri','Garasje/P-plass','Heis','Ingen gjenboerer','Kabel-TV','Lademulighet','Livsløpsstandard','Moderne','Offentlig vann/kloakk','Parkett','Peis/Ildsted','Rolig','Sentralt','Utsikt','Vaktmester-/vektertjeneste','Bademulighet','Fiskemulighet','Turterreng'] #Liste med fasteliteter som finnes på finn.no
 
-    fylker = {'Agder':[22042], 'Innlandet':[22034], 'Møre og Romsdal':[20015], 'Nordland':[20018], 'Oslo':[20061], 'Rogaland':[20012], 'Troms og Finnmark':[22054], 'Trøndelag':[20016], 'Vestfold og Telemark':[22038], 'Vestland':[22046],'Viken':[22030]} #Fylker med tilhørende finn-kode (url) som liste
+    fylker = { 'Vestfold og Telemark':[22038], 'Vestland':[22046],'Viken':[22030], 'Trøndelag':[20016], 'Agder':[22042], 'Innlandet':[22034], 'Møre og Romsdal':[20015], 'Nordland':[20018], 'Oslo':[20061], 'Rogaland':[20012], 'Troms og Finnmark':[22054], 'Trøndelag':[20016]} #Fylker med tilhørende finn-kode (url) som liste
 
     number_of_ads(fylker) #Legger til antall annonser i fylker-dictionaryen. {Fylke-navn:[finn-kode,antall annonser]}
 
@@ -259,6 +261,7 @@ def scrape_finn():
         antall_sider = number_of_pages(antall_annonser) #Henter antall sider for hvert fylke
         print(f'Antall sider for {fylke} er {antall_sider}')
         antall_annonser_fylke = 0 #Resettes for hvert fylke
+        nytt_filnavn = fylke+filnavn #Lager seperate filer for hvert fylke
 
         for i in range(1,antall_sider): #Går gjennom opptil 50 sider for hvert fylke
             html_mainpage = requests.get(get_page_url(i, finn_kode)).text
@@ -304,7 +307,7 @@ def scrape_finn():
                 else:
                     bolig_info['Nybygg'] = 0
 
-                header = append_to_csv(bolig_info, header, filnavn) #Oppdaterer header til True
+                header = append_to_csv(bolig_info, header, nytt_filnavn) #Oppdaterer header til True
                 
                 if antall%10==0:
                     print(f'Appended row nr: {antall}. Fylke: {fylke}')
